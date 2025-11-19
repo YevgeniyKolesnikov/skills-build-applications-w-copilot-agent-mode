@@ -21,3 +21,17 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('api/', include('octofit_tracker.api_urls')),
 ]
+
+# Root endpoint to show API base URL
+from django.http import JsonResponse
+import os
+def api_base_url(request):
+    codespace = os.environ.get('CODESPACE_NAME')
+    if codespace:
+        url = f'https://{codespace}-8000.app.github.dev/api/'
+    else:
+        url = 'http://localhost:8000/api/'
+    return JsonResponse({'api_base_url': url})
+
+urlpatterns.insert(0, path('', api_base_url))
+
